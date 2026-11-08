@@ -41,10 +41,28 @@ jobs:
             llvm-14-dev libclang-14-dev libclc-14 libarchive-dev zlib1g-dev \
             libexpat1-dev libzstd-dev libsensors-dev libudev-dev libelf-dev \
             libva-dev libvdpau-dev \
-            glslang-tools python3-ply python3-numpy libxml2-dev
+            python3-ply python3-numpy libxml2-dev
           apt install -y -t bookworm-backports meson
           meson --version
           /usr/lib/llvm-14/bin/llvm-config --version
+
+      - name: Build glslang (build-time tool, source-built for bookworm glibc)
+        run: |
+          cd /tmp
+          curl -sSL -o glslang.tar.gz https://github.com/KhronosGroup/glslang/archive/refs/tags/12.2.0.tar.gz
+          tar xf glslang.tar.gz
+          cd glslang-12.2.0
+          cmake -S . -B build \
+            -DCMAKE_BUILD_TYPE=Release \
+            -DCMAKE_INSTALL_PREFIX=/usr/local \
+            -DENABLE_OPT=OFF \
+            -DBUILD_EXTERNAL=OFF \
+            -DBUILD_SHARED_LIBS=OFF
+          cmake --build build -j$(nproc)
+          cmake --install build
+          rm -rf /tmp/glslang-12.2.0 /tmp/glslang.tar.gz
+          which -a glslangValidator
+          glslangValidator --version | head -3
 
       - name: Cache ccache
         uses: actions/cache@v6
