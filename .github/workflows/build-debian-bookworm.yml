@@ -49,9 +49,9 @@ jobs:
       - name: Build glslang (build-time tool, source-built for bookworm glibc)
         run: |
           cd /tmp
-          curl -sSL -o glslang.tar.gz https://github.com/KhronosGroup/glslang/archive/refs/tags/12.2.0.tar.gz
+          curl -sSL -o glslang.tar.gz https://github.com/KhronosGroup/glslang/archive/refs/tags/15.1.0.tar.gz
           tar xf glslang.tar.gz
-          cd glslang-12.2.0
+          cd glslang-15.1.0
           cmake -S . -B build \
             -DCMAKE_BUILD_TYPE=Release \
             -DCMAKE_INSTALL_PREFIX=/usr/local \
@@ -59,7 +59,7 @@ jobs:
             -DBUILD_SHARED_LIBS=OFF
           cmake --build build -j$(nproc)
           cmake --install build
-          rm -rf /tmp/glslang-12.2.0 /tmp/glslang.tar.gz
+          rm -rf /tmp/glslang-15.1.0 /tmp/glslang.tar.gz
           which -a glslangValidator
           glslangValidator --version | head -3
 
