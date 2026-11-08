@@ -34,7 +34,10 @@ jobs:
             libx11-xcb-dev libxcb-dri3-dev libxcb-shm0-dev libxcb-sync-dev \
             libxcb-present-dev libxcb-glx0-dev libxshmfence-dev libxext-dev \
             libxdamage-dev libxfixes-dev libxrandr-dev libxxf86vm-dev \
-            libgl-dev libegl-dev libgles-dev libvulkan-dev \
+            libglvnd-dev libgl-dev libegl-dev libgles-dev libglx-dev libopengl-dev \
+            libvulkan-dev cmake \
+            libx11-dev libxcb-randr0-dev libxcb-xfixes0-dev libxcb-shape0-dev \
+            libxcb-render0-dev libxrender-dev libgbm-dev \
             llvm-14-dev libclang-14-dev libclc-14 libarchive-dev zlib1g-dev \
             libexpat1-dev libzstd-dev libsensors-dev libudev-dev libelf-dev \
             libva-dev libvdpau-dev
