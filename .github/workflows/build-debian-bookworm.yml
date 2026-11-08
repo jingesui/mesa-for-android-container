@@ -40,7 +40,8 @@ jobs:
             libxcb-render0-dev libxrender-dev libgbm-dev \
             llvm-14-dev libclang-14-dev libclc-14 libarchive-dev zlib1g-dev \
             libexpat1-dev libzstd-dev libsensors-dev libudev-dev libelf-dev \
-            libva-dev libvdpau-dev
+            libva-dev libvdpau-dev \
+            glslang-tools python3-ply python3-numpy libxml2-dev
           apt install -y -t bookworm-backports meson
           meson --version
           /usr/lib/llvm-14/bin/llvm-config --version
