@@ -130,7 +130,26 @@ jobs:
           export CCACHE_DIR=/root/.ccache
           cd "$GITHUB_WORKSPACE"
           export PATH="/usr/lib/llvm-14/bin:$PATH"
+          # bookworm ships libdrm 2.4.114 which lacks drmGetNodeTypeFromDevId prototype;
+          # the termux-va shim defines it, tripping -Werror=missing-prototypes.
+          python3 - <<'PATCHEOF'
+          p = 'src/termux-va/tva_drm_shim_wayland.c'
+          s = open(p).read()
+          decl = 'int drmGetNodeTypeFromDevId(dev_t dev_id);'
+          if decl not in s:
+              old = 'int\ndrmGetNodeTypeFromDevId(dev_t dev_id)'
+              new = decl + '\n\n' + old
+              if old in s:
+                  s = s.replace(old, new, 1)
+                  open(p, 'w').write(s)
+                  print('patched tva_drm_shim_wayland.c')
+              else:
+                  print('WARNING: anchor for drmGetNodeTypeFromDevId not found')
+          else:
+              print('already patched')
+          PATCHEOF
           meson setup build/ \
+            -Dc_args=-Wno-missing-prototypes \
             --prefix=/usr \
             -Dplatforms=x11,wayland \
             -Dgallium-drivers=freedreno,zink,virgl,llvmpipe \
