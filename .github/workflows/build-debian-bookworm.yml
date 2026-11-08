@@ -63,17 +63,24 @@ jobs:
           which -a glslangValidator
           glslangValidator --version | head -3
 
-      - name: Build wayland-protocols (pure XML data, no glibc impact)
+      - name: Install newer wayland-protocols XML (pure data, no build needed)
         run: |
           cd /tmp
-          curl -sSL -o wayland-protocols.tar.xz https://gitlab.freedesktop.org/wayland/wayland-protocols/-/releases/1.41/downloads/wayland-protocols-1.41.tar.xz
-          tar xf wayland-protocols.tar.xz
-          cd wayland-protocols-1.41
-          meson setup build --prefix=/usr/local --libdir=lib
-          meson install -C build
-          cd /tmp && rm -rf wayland-protocols-1.41 wayland-protocols.tar.xz
-          pkg-config --modversion wayland-protocols
-          ls /usr/local/share/wayland-protocols/staging/ | head -20
+          curl -sSL -o wp.tar.xz https://gitlab.freedesktop.org/wayland/wayland-protocols/-/releases/1.41/downloads/wayland-protocols-1.41.tar.xz
+          tar xf wp.tar.xz
+          DEST=/usr/share/wayland-protocols
+          cp -a wayland-protocols-1.41/staging/.  "$DEST/staging/"
+          cp -a wayland-protocols-1.41/stable/.   "$DEST/stable/"
+          cp -a wayland-protocols-1.41/unstable/. "$DEST/unstable/"
+          rm -rf /tmp/wayland-protocols-1.41 /tmp/wp.tar.xz
+          for f in staging/fifo/fifo-v1.xml staging/commit-timing/commit-timing-v1.xml \
+                   staging/tearing-control/tearing-control-v1.xml \
+                   staging/linux-drm-syncobj/linux-drm-syncobj-v1.xml \
+                   staging/color-management/color-management-v1.xml \
+                   stable/presentation-time/presentation-time.xml \
+                   unstable/linux-dmabuf/linux-dmabuf-unstable-v1.xml; do
+            test -f "$DEST/$f" && echo "OK   $f" || { echo "MISS $f"; exit 1; }
+          done
 
       - name: Cache ccache
         uses: actions/cache@v6
