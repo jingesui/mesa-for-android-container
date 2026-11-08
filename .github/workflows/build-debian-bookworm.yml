@@ -28,7 +28,7 @@ jobs:
         run: |
           echo 'deb http://deb.debian.org/debian bookworm-backports main' > /etc/apt/sources.list.d/backports.list
           apt update
-          apt install -y --no-install-recommends ca-certificates git ccache build-essential pkg-config \
+          apt install -y --no-install-recommends ca-certificates curl git ccache build-essential pkg-config \
             ninja-build bison flex python3-mako python3-yaml \
             libdrm-dev libwayland-dev wayland-protocols libxkbcommon-dev \
             libx11-xcb-dev libxcb-dri3-dev libxcb-shm0-dev libxcb-sync-dev \
@@ -56,7 +56,6 @@ jobs:
             -DCMAKE_BUILD_TYPE=Release \
             -DCMAKE_INSTALL_PREFIX=/usr/local \
             -DENABLE_OPT=OFF \
-            -DBUILD_EXTERNAL=OFF \
             -DBUILD_SHARED_LIBS=OFF
           cmake --build build -j$(nproc)
           cmake --install build
