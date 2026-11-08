@@ -63,6 +63,18 @@ jobs:
           which -a glslangValidator
           glslangValidator --version | head -3
 
+      - name: Build wayland-protocols (pure XML data, no glibc impact)
+        run: |
+          cd /tmp
+          curl -sSL -o wayland-protocols.tar.xz https://gitlab.freedesktop.org/wayland/wayland-protocols/-/releases/1.41/downloads/wayland-protocols-1.41.tar.xz
+          tar xf wayland-protocols.tar.xz
+          cd wayland-protocols-1.41
+          meson setup build --prefix=/usr/local --libdir=lib
+          meson install -C build
+          cd /tmp && rm -rf wayland-protocols-1.41 wayland-protocols.tar.xz
+          pkg-config --modversion wayland-protocols
+          ls /usr/local/share/wayland-protocols/staging/ | head -20
+
       - name: Cache ccache
         uses: actions/cache@v6
         with:
